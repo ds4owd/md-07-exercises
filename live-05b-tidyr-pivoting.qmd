@@ -1,0 +1,85 @@
+---
+title: "Live coding exercise - Pivoting"
+format:
+  html:
+    embed-resources: true
+editor: visual
+editor_options: 
+  chunk_output_type: console
+execute:
+  echo: true
+  warning: false
+bibliography: references.bib
+---
+
+```{r}
+library(tidyverse)
+library(gapminder)
+```
+
+# tidyr: pivoting
+
+## Example: Waste characterisation data
+
+The data for this exercise was generated as part of a course taught at ETH Zurich, Switzerland [@benaleya2022].
+
+The dataset contains the results of a waste characterisation study of public bins in Zurich, Switzerland. Waste was separated and weighed in kg for the following categories:
+
+-   paper
+-   PET
+-   metals
+-   glass
+-   others
+
+Additional metadata on location and type of bin is available.
+
+```{r}
+
+
+
+```
+
+```{r}
+
+
+```
+
+## Example: Gapminder
+
+The following exercise is taken from [@zimmerman2019].
+
+```{r}
+
+gapminder_wide <- read_csv("https://raw.githubusercontent.com/swcarpentry/r-novice-gapminder/main/episodes/data/gapminder_wide.csv")
+
+```
+
+```{r}
+
+
+```
+
+### From wide to long
+
+```{r}
+
+
+```
+
+**Your turn**
+
+1.  Using `gapminder_long`, calculate the mean life expectancy, population, and gdpPercap for each continent. **Hint:** use the `group_by()` and `summarize()` functions we learned in the `dplyr` lesson.
+2.  Assign the created dataframe to an object with the name `gapminder_long_summary`
+
+```{r}
+
+```
+
+### From long to intermediate format
+
+```{r}
+
+
+```
+
+# References

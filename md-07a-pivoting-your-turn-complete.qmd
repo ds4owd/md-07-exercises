@@ -1,0 +1,155 @@
+---
+title: "Pivoting"
+format:
+  html:
+    embed-resources: true
+    toc: true
+execute:
+  warning: false
+editor_options: 
+  chunk_output_type: console
+editor: visual
+bibliography: references.bib
+---
+
+```{r}
+library(tidyverse)
+library(gapminder)
+```
+
+# Example 1: Waste characterisation data
+
+The data for this exercise was generated as part of a course taught at ETH Zurich, Switzerland [@benaleya2022].
+
+The dataset contains the results of a waste characterisation study of public bins in Zurich, Switzerland. Waste was separated and weighed in kg for the following categories:
+
+-   paper
+-   PET
+-   metals
+-   glass
+-   others
+
+## Task 1
+
+1.  Run the code in the code chunk below.
+
+```{r}
+waste_data <- read_csv(here::here("data/rbtl_fs22_waste_composition_bellevue.csv"))
+```
+
+## Task 2
+
+1.  Inspect the `waste_data` object using `glimpse()`.
+
+```{r}
+glimpse(waste_data)
+```
+
+## Task 3
+
+1.  Starting with `waste_data` use the pipe operator `|>` and on a new line write: `mutate(number = as.character(number))`
+2.  Add the pipe operator `|>` and on a new line use `pivot_longer()` to convert the data from wide to long format. The resulting dataframe should have 3 columns: `number`, `waste_category`, and `weight`.
+3.  Use the assignment operator `<-` to assign the created dataframe to an object with the name `waste_data_long`.
+
+```{r}
+waste_data_long <- waste_data |> 
+  mutate(number = as.character(number)) |> 
+  pivot_longer(cols = paper:others,
+              names_to = "waste_category",
+              values_to = "weight") |> 
+```
+
+## Task 4
+
+1.  Next to the code chunk option #\| eval: change the value from false to true.
+2.  Run the code in the code-chunk below.
+3.  Discuss why the data needed to be in a long format to produce this plot.
+4.  Discuss why we converted the `number` column to a character type. Try out what happens if you did not convert the `number` column to a character type.
+5.  Render and fix any errors.
+
+```{r}
+#| eval: true
+ggplot(data = waste_data_long,
+       aes(x = number,
+           y = weight,
+           fill = waste_category)) +
+  geom_col()
+```
+
+# Example 2: Gapminder
+
+For this example we will use the `gapminder` dataset. The `gapminder` dataset contains data on life expectancy, population, and GDP per capita for 142 countries from 1952 to 2007.
+
+## Task 1
+
+1.  Run the code in the code chunk below.
+
+```{r}
+gapminder_wide <- read_csv("https://raw.githubusercontent.com/swcarpentry/r-novice-gapminder/main/episodes/data/gapminder_wide.csv")
+```
+
+## Task 2
+
+1.  Use the `glimpse()` function to inspect the data `gapminder_wide`.
+2.  Use the `glimpse()` function to inspect the data `gapminder`.
+3.  What's the difference? Discuss with your colleague.
+
+```{r}
+glimpse(gapminder_wide)
+glimpse(gapminder)
+```
+
+## Task 3
+
+1.  Run the code in the code chunk below.
+2.  Discuss what is contained in the column `obstype_year`.
+
+Now obstype_year actually contains 2 pieces of information, the observation type (pop, lifeExp, or gdpPercap) and the year. We can use the separate() function to split the character strings into multiple variables
+
+```{r}
+gapminder_wide |> 
+  pivot_longer(cols = gdpPercap_1952:pop_2007,
+               names_to = "obstype_year",
+               values_to = "obs_value")
+```
+
+## Task 4
+
+1.  Run the code in the code chunk below.
+2.  Discuss what the `separate_wider_delim()` function does.
+
+```{r}
+gapminder_long <- gapminder_wide |> 
+  pivot_longer(cols = gdpPercap_1952:pop_2007,
+               names_to = "obstype_year",
+               values_to = "obs_value") |> 
+  separate_wider_delim(col = obstype_year, names = c("obs_type", "year"), delim = "_")
+```
+
+## Task 5 (stretch goal)
+
+1.  Use `gapminder_long` to calculate the mean life expectancy, population, and gdpPercap for each continent. **Hint:** use the `group_by()` and `summarize()` functions we learned in the `dplyr` lesson.
+2.  Assign the created dataframe to an object with the name `gapminder_long_summary`
+
+```{r}
+gapminder_long_summary <- gapminder_long |> 
+  group_by(continent, obs_type) |> 
+  summarise(means = mean(obs_value)) 
+```
+
+## Task 6 (stretch goal)
+
+Do you want a table that looks nice when displayed in a report? Back to wide format we go!
+
+1.  Next to the code chunk option #\| eval: change the value from false to true.
+2.  Run the code in the code chunk below.
+3.  Render and fix any errors.
+
+```{r}
+#| eval: true
+gapminder_long_summary |> 
+  pivot_wider(names_from = obs_type,
+              values_from = means) 
+```
+
+# References
