@@ -31,7 +31,8 @@ The dataset contains the results of a waste characterisation study of public bin
 
 ## Task 1
 
-1.  Run the code in the code chunk below.
+1.  Run all code chunks above.
+2.  Run the code in the code chunk below.
 
 ```{r}
 waste_data <- read_csv(here::here("data/rbtl_fs22_waste_composition_bellevue.csv"))
@@ -91,8 +92,7 @@ gapminder_wide <- read_csv("https://raw.githubusercontent.com/swcarpentry/r-novi
 3.  What's the difference? Discuss with your colleague.
 
 ```{r}
-glimpse(gapminder_wide)
-glimpse(gapminder)
+
 ```
 
 ## Task 3
